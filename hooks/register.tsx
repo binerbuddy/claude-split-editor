@@ -1,8 +1,8 @@
 import type { EngineInterface, Register } from 'claude-code'
 
 // The keybinding action the edit Button answers to. keybindings.json binds
-// ctrl+g to it (and unbinds ctrl+g from chat:externalEditor, whose editor
-// blanks the screen until it exits).
+// ctrl+g to it globally, over Chat's own chat:externalEditor (whose editor
+// blanks the screen until it exits). Claude Code's own stays on ctrl+x ctrl+e.
 const ACTION = 'app:toggleDiffPreSession'
 
 // Writes the draft (stdin) to a temp file, opens the editor on it in a herdr
@@ -12,10 +12,16 @@ set -u
 file=$(mktemp --suffix=.md "\${TMPDIR:-/tmp}/claude-prompt.XXXXXX")
 trap 'rm -f "$file"' EXIT
 cat >"$file"
-[[ -n \${HERDR_PANE_ID:-} ]] || { echo "not inside a herdr pane" >&2; exit 3; }
+[[ -n \${HERDR_PANE_ID:-} ]] || { echo "needs herdr; ctrl+x ctrl+e opens Claude Code's own editor" >&2; exit 3; }
+# The first editor that exists: a stale $EDITOR must not strand the split.
+editor=nvim
+for cand in "\${VISUAL:-}" "\${EDITOR:-}" nvim vim vi nano; do
+  [[ -n $cand ]] && command -v "\${cand%% *}" >/dev/null && { editor=$cand; break; }
+done
 pane=$(herdr pane split "$HERDR_PANE_ID" --direction down --ratio 0.5 --focus | jq -r '.result.pane.pane_id // empty')
 [[ -n $pane ]] || { echo "herdr could not split the pane" >&2; exit 4; }
-herdr pane run "$pane" " exec \${VISUAL:-\${EDITOR:-nvim}} $(printf %q "$file")" >/dev/null
+# exit, not exec: the split closes even when the editor fails to start.
+herdr pane run "$pane" " $editor $(printf %q "$file"); exit" >/dev/null
 while herdr pane get "$pane" >/dev/null 2>&1; do sleep 0.2; done
 cat "$file"
 `

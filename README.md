@@ -5,7 +5,7 @@ split instead of taking over the terminal.
 
 Claude Code's own external editor (`ctrl+g`) blanks Claude's screen until the
 editor exits, so the transcript and any side panes vanish while you write.
-This plugin opens `$VISUAL` / `$EDITOR` (default `nvim`) on the current draft
+This plugin opens `$VISUAL` / `$EDITOR` (the first that exists, else `nvim`) on the current draft
 in a split below Claude's pane. Claude stays drawn; when the editor exits the
 text goes back into the prompt box.
 
@@ -34,7 +34,9 @@ the chord.
 ## Requirements
 
 Claude Code running inside a herdr pane, with `herdr` and `jq` on `PATH`.
-Elsewhere it says so in a toast and leaves the draft alone.
+Elsewhere `ctrl+g` shows a toast and leaves the draft alone: a keybinding cannot
+depend on herdr, and a plugin cannot start Claude Code's own editor, so use
+`ctrl+x ctrl+e` there.
 
 ## Develop
 
