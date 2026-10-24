@@ -15,28 +15,27 @@ text goes back into the prompt box.
 /plugin install split-editor --marketplace binerbuddy/claude-split-editor
 ```
 
-Then bind `ctrl+g` to it in `~/.claude/keybindings.json` (the plugin listens on
-the otherwise unbound `app:toggleDiffPreSession` action):
+Then bind a key to it in `~/.claude/keybindings.json` (the plugin listens on
+the otherwise unbound `app:toggleDiffPreSession` action). For example `ctrl+o`,
+which leaves `ctrl+g` as Claude Code's own editor (`ctrl+o` normally toggles
+the transcript view):
 
 ```json
 {
   "$schema": "https://www.schemastore.org/claude-code-keybindings.json",
   "bindings": [
-    { "context": "Chat", "bindings": { "ctrl+g": null } },
-    { "context": "Global", "bindings": { "ctrl+g": "app:toggleDiffPreSession" } }
+    { "context": "Global", "bindings": { "ctrl+o": "app:toggleDiffPreSession" } }
   ]
 }
 ```
 
-`ctrl+x ctrl+e` still opens Claude Code's own editor. `/edit` does the same as
-the chord.
+`/edit` does the same as the key.
 
 ## Requirements
 
 Claude Code running inside a herdr pane, with `herdr` and `jq` on `PATH`.
-Elsewhere `ctrl+g` shows a toast and leaves the draft alone: a keybinding cannot
-depend on herdr, and a plugin cannot start Claude Code's own editor, so use
-`ctrl+x ctrl+e` there.
+Elsewhere the key shows a toast and leaves the draft alone; use Claude Code's
+own editor (`ctrl+g`) there.
 
 ## Develop
 

@@ -1,8 +1,8 @@
 import type { EngineInterface, Register } from 'claude-code'
 
-// The keybinding action the edit Button answers to. keybindings.json binds
-// ctrl+g to it globally, over Chat's own chat:externalEditor (whose editor
-// blanks the screen until it exits). Claude Code's own stays on ctrl+x ctrl+e.
+// The keybinding action the edit Button answers to, bound to a key of the
+// person's choosing in keybindings.json. Claude Code's own editor (ctrl+g)
+// blanks the screen until it exits; this one opens in a herdr split.
 const ACTION = 'app:toggleDiffPreSession'
 
 // Writes the draft (stdin) to a temp file, opens the editor on it in a herdr
@@ -12,7 +12,7 @@ set -u
 file=$(mktemp --suffix=.md "\${TMPDIR:-/tmp}/claude-prompt.XXXXXX")
 trap 'rm -f "$file"' EXIT
 cat >"$file"
-[[ -n \${HERDR_PANE_ID:-} ]] || { echo "needs herdr; ctrl+x ctrl+e opens Claude Code's own editor" >&2; exit 3; }
+[[ -n \${HERDR_PANE_ID:-} ]] || { echo "needs herdr; ctrl+g opens Claude Code's own editor" >&2; exit 3; }
 # The first editor that exists: a stale $EDITOR must not strand the split.
 editor=nvim
 for cand in "\${VISUAL:-}" "\${EDITOR:-}" nvim vim vi nano; do
