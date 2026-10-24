@@ -37,6 +37,33 @@ Claude Code running inside a herdr pane, with `herdr` and `jq` on `PATH`.
 Elsewhere the key shows a toast and leaves the draft alone; use Claude Code's
 own editor (`ctrl+g`) there.
 
+## Codex
+
+The same repo is a Codex plugin. Codex keeps its screen while its own external
+editor (`ctrl+g`) runs, so there it only needs `VISUAL` pointed at the split
+editor script; no key binding.
+
+```
+codex plugin marketplace add binerbuddy/claude-split-editor
+codex plugin add split-editor@claude-split-editor
+```
+
+Approve the plugin's hook when Codex asks. It keeps a stable link to the script
+at `~/.local/state/codex-split-editor/split-edit` (made when a session starts,
+so after the first session). Start Codex with that as `VISUAL`, for example in
+`~/.bashrc`:
+
+```bash
+codex() {
+  local split_edit="${XDG_STATE_HOME:-$HOME/.local/state}/codex-split-editor/split-edit"
+  [ -x "$split_edit" ] && local -x VISUAL="$split_edit"
+  command codex "$@"
+}
+```
+
+The script opens `$SPLIT_EDITOR`, `$EDITOR` or `nvim` (the first that exists)
+in a herdr split below Codex's pane, and edits in place outside herdr.
+
 ## Develop
 
 ```

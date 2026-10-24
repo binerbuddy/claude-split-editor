@@ -1,0 +1,20 @@
+{
+  "name": "split-editor",
+  "version": "0.2.0",
+  "description": "Edit the Codex prompt in a herdr split",
+  "author": { "name": "binerbuddy", "url": "https://github.com/binerbuddy" },
+  "homepage": "https://github.com/binerbuddy/claude-split-editor",
+  "repository": "https://github.com/binerbuddy/claude-split-editor",
+  "license": "MIT",
+  "keywords": ["editor", "herdr", "prompt"],
+  "hooks": "./codex/hooks.json",
+  "interface": {
+    "displayName": "Split Editor",
+    "shortDescription": "Edit the prompt in a herdr split",
+    "longDescription": "Points Codex's external editor at a herdr split below its pane. Set VISUAL to ~/.local/state/codex-split-editor/split-edit when starting codex.",
+    "developerName": "binerbuddy",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive"],
+    "websiteURL": "https://github.com/binerbuddy/claude-split-editor"
+  }
+}

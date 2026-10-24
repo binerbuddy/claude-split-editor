@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Codex's external editor (its ctrl+g), set as VISUAL. Inside herdr it opens
+# the editor in a split below Codex's pane and waits for it to close; Codex
+# keeps its screen meanwhile. Anywhere else it edits in place.
+#
+#   split-edit <file>      edit (what Codex runs)
+#   split-edit link        SessionStart hook: keep a stable path to this script
+
+set -u
+
+SELF=$(readlink -f "$0")
+LINK="${XDG_STATE_HOME:-$HOME/.local/state}/codex-split-editor/split-edit"
+
+if [[ ${1:-} == link ]]; then
+  cat >/dev/null
+  mkdir -p "$(dirname "$LINK")"
+  ln -sfn "$SELF" "$LINK"
+  exit 0
+fi
+
+# The first editor that exists that isn't this script.
+editor=nvim
+for cand in "${SPLIT_EDITOR:-}" "${EDITOR:-}" nvim vim vi nano; do
+  [[ -n $cand ]] || continue
+  bin=$(command -v "${cand%% *}") || continue
+  [[ $(readlink -f "$bin") == "$SELF" ]] && continue
+  editor=$cand
+  break
+done
+
+if [[ -z ${HERDR_PANE_ID:-} ]] || ! command -v herdr >/dev/null; then
+  exec $editor "$@"
+fi
+
+pane=$(herdr pane split "$HERDR_PANE_ID" --direction down --ratio 0.5 --focus 2>/dev/null |
+  jq -r '.result.pane.pane_id // empty')
+[[ -n $pane ]] || exec $editor "$@"
+
+# exit, not exec: the split closes even when the editor fails to start.
+herdr pane run "$pane" " $editor $(printf '%q ' "$@"); exit" >/dev/null
+
+while herdr pane get "$pane" >/dev/null 2>&1; do
+  sleep 0.2
+done

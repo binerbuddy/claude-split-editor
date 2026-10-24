@@ -1,0 +1,16 @@
+{
+  "description": "Keep a stable path to the split editor for VISUAL",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$PLUGIN_ROOT/codex/bin/split-edit\" link",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
