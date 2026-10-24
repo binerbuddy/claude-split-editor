@@ -1,0 +1,8 @@
+{
+  "name": "split-editor",
+  "version": "0.1.0",
+  "description": "Edit the prompt in a herdr split while Claude Code stays on screen",
+  "author": { "name": "binerbuddy" },
+  "repository": "https://github.com/binerbuddy/claude-split-editor",
+  "license": "MIT"
+}

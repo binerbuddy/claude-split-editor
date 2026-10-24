@@ -1,0 +1,6 @@
+{
+  "name": "claude-split-editor",
+  "owner": { "name": "binerbuddy" },
+  "description": "Edit the Claude Code prompt in a herdr split",
+  "plugins": [{ "name": "split-editor", "source": "./" }]
+}
